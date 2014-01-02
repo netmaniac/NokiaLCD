@@ -4,10 +4,11 @@
 #include "logo.h"
 
 #include <NettigoKeypad.h>
+#include "NokiaJoystick.h"
 
+Nokia_Joystick joystick = Nokia_Joystick();
 Nokia_lcd lcd=Nokia_lcd();
 
-NG_Keypad joystick=NG_Keypad();
 
 
 const int menu_num=4;//ilość elementów w menu
@@ -51,14 +52,11 @@ void menu_deselect(byte sel){//odznczamy element o danym nuemrze
 }
 
 void setup(void){
-  int b[5] = {72, 237, 417, 622, 882};
   lcd.cLCD_Backlight(1);
   lcd.cLCD_Init();
   lcd.cLCD_Contrast(58);
   lcd.cLCD_CLS();//inicjalizujemy i czyścimy LCD
-
-  joystick.setBoundaries();
-  
+  logoshow();
   //menu_show();//wyświetlamy menu
   
 }
@@ -146,50 +144,3 @@ void logoshow(){
   menu_show(selected);
 }
 
-byte joystick(){
-  int pomiar=analogRead(0);
-  if(pomiar>granice[0]){
-    return 0; 
-  }else if(pomiar>granice[1]){
-    return 1;
-  }else if(pomiar>granice[2]){
-    return 2;
-  }else if(pomiar>granice[3]){
-    return 3;
-  }else if(pomiar>granice[4]){
-    return 4;
-  }else{
-    return 5;
-  }
-}
-
-void joystick_update(){//program w przerwaniu co 4ms
-  byte state=joystick();//odczytujemy stan joysticka
-  static byte old_state=255,new_state=255;
-  static int timer=0;
-  //lokalne zmienne static przechowujące dane do eliminacji drgań styków
-  if(state!=j_none){//jeśli joystick jest wciścnięty
-    if(state!=old_state&&flag==0){//jeśli nastąpiłą zmiana jego stanu i nie zostałą wcześniej zarejestrowana
-      flag=1;//ustawiamy flagę mówiącą o tym, że nastąpiłą zmiana stanu
-      new_state=state;//zapamiętujemy pozycję
-      timer=0;//resetujemy timer
-    }else if(state!=old_state&&flag==1&&timer<debounce_time_raw&&state==new_state){//jeśli nadal joystick znajduje się w tej samej pozycji to odmierzamy czas
-      timer++;
-    }else if(state!=old_state&&flag==1&&timer>=debounce_time_raw&&state==new_state){//jeśli odmierzyliśmy czas i joystick nadal nie zmienił swojej pozycji
-      flag=2;//ustawiamy flagę informującą o wciśnięciu przycisku
-      joystick_sel=state;//przekazujemy do odpowiedniej zmiennej jaki to przycisk
-      old_state=state;//zapisujemy stan, do późniejszego wykrycia jego zmiany
-      timer=0;//resetujemy timer
-    }else if(state==old_state&&flag==3&&timer<rep_debounce_time_raw){//jeśli joystick nadal nie zmienił pozycji i jego zmiana zostałą zarejestrowana w programie ustawieniem flagi na wartość 3
-      timer++;//to odmierzamy czas
-    }else if(state==old_state&&flag==3&&timer>=rep_debounce_time_raw){//jeśli upłynął odpowiedni czas
-      timer=0;//resetujemy timer do ponownego odmierzania czasu
-      flag=2;//ustawiam flagę informującą o konieczności kolejnego wykonania funkcji
-    }
-  }else{//jeśli puszczono joystick to resetujemy wszystkie zmienne
-    flag=0;
-    old_state=0;
-    timer=0;
-    joystick_sel=0;
-  }
-}

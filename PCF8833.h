@@ -58,7 +58,7 @@ void LCD_Char(char ch, unsigned char x, unsigned char y, int fcolor, int bcolor,
 void LCD_String (char *the_string,unsigned char x, unsigned char y, int fcolor, int bcolor, unsigned char *font);
 void LCD_Line(unsigned char x1, unsigned char y1, unsigned char x2, unsigned char y2, int color);
 void LCD_Circle(unsigned char center_x, unsigned char center_y, unsigned char rad, int color);
-void LCD_Bitmap (unsigned char start_x, unsigned char start_y, unsigned char h_size, unsigned char v_size, unsigned char *bitmap_data);
+void LCD_Bitmap (unsigned char start_x, unsigned char start_y, unsigned char h_size, unsigned char v_size,const unsigned char *bitmap_data);
 //void LCD_Bitmap_bas (unsigned char start_x, unsigned char start_y, unsigned char h_size, unsigned char v_size, unsigned char *bitmap_data);
 
 // Epson S1D15G10 Command Set 

@@ -31,8 +31,8 @@ class Nokia_lcd
 	void cLCD_String(char *pString, unsigned char  x, unsigned char  y,  int fColor, int bColor, unsigned char *font);
 	void cLCD_Int(int n, unsigned char  x, unsigned char  y,  int fColor, int bColor, unsigned char *font);
 	void cLCD_Float(float f, int p, unsigned char  x, unsigned char  y,  int fColor, int bColor, unsigned char *font);
-	//void cLCD_Bitmap(unsigned char start_x, unsigned char start_y, unsigned char h_size, unsigned char v_size, unsigned char *bitmap_data);
-	void cLCD_Bitmap(unsigned char start_x, unsigned char start_y,unsigned char *bitmap_data);
+	//void cLCD_Bitmap(unsigned char start_x, unsigned char start_y, unsigned char h_size, unsigned char v_size, const unsigned char *bitmap_data);
+	void cLCD_Bitmap(unsigned char start_x, unsigned char start_y,const unsigned char *bitmap_data);
 	//void cLCD_Bitmap_bas(unsigned char start_x, unsigned char start_y, unsigned char h_size, unsigned char v_size, unsigned char *bitmap_data);
 	//void cLCD_Bitmap_bas(unsigned char start_x, unsigned char start_y, unsigned char *bitmap_data);
 	void cLCD_Contrast(unsigned char contrast);

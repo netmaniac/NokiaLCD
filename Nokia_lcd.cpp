@@ -88,7 +88,7 @@ void Nokia_lcd::cLCD_Float(float f, int p, unsigned char  x, unsigned char  y,  
 	}
 }
 
-void Nokia_lcd::cLCD_Bitmap(unsigned char start_x, unsigned char start_y, unsigned char *bitmap_data) {
+void Nokia_lcd::cLCD_Bitmap(unsigned char start_x, unsigned char start_y,const unsigned char *bitmap_data) {
 	LCD_Bitmap (start_x, start_y, pgm_read_byte(bitmap_data+1), pgm_read_byte(bitmap_data+2), bitmap_data+5);
 } 
 

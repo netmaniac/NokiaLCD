@@ -511,7 +511,7 @@ void LCD_Circle(unsigned char x0, unsigned char y0, unsigned char radius, int co
 }
 
 
-void LCD_Bitmap (unsigned char start_x, unsigned char start_y, unsigned char h_size, unsigned char v_size, unsigned char *bitmap_data) 
+void LCD_Bitmap (unsigned char start_x, unsigned char start_y, unsigned char h_size, unsigned char v_size,const unsigned char *bitmap_data) 
 {
 	int i;
 	unsigned char *pBitmap;
