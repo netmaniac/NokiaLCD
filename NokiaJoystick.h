@@ -1,3 +1,11 @@
+/*
+ * Does not work - Arduino preprocesor does not allow to include library from library
+ * Fix from http://forum.arduino.cc/index.php/topic,42818.0.html#5 does not work
+ * 
+#ifndef _NG_Keypad_h_
+#include "../NettigoKeypad/NettigoKeypad.h"
+#endif
+*/
 
 #define JOYSTICK_SELECT   NG_Keypad::SELECT 
 #define JOYSTICK_LEFT		 NG_Keypad::UP

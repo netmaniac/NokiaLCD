@@ -1,5 +1,8 @@
+/* Using joystick on LCD Shield. Requires Nettigo Keypad library to be instaled in
+ * sketchbook/libraries https://github.com/netmaniac/NettigoKeypad
+ * */
 #include <NettigoKeypad.h>
-#include <joystick.h>
+#include <NokiaJoystick.h>
 
 Nokia_Joystick joystick = Nokia_Joystick();
 
