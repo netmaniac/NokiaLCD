@@ -3,11 +3,13 @@
 
 #include "logo.h"
 
-#include <TimerOne.h>
+#include <NettigoKeypad.h>
 
 Nokia_lcd lcd=Nokia_lcd();
 
-const int granice[]={882,622,417,237,72};//granice dla odczytu położenia joysticka
+NG_Keypad joystick=NG_Keypad();
+
+
 const int menu_num=4;//ilość elementów w menu
 const int max_text_len=9;//maksymalna długość tekstu w menu
 const char menu [menu_num][max_text_len+1]={"Pozycja 1","Logo","Kolorki","Info"};//nazwy pozycji w menu
@@ -49,16 +51,16 @@ void menu_deselect(byte sel){//odznczamy element o danym nuemrze
 }
 
 void setup(void){
+  int b[5] = {72, 237, 417, 622, 882};
   lcd.cLCD_Backlight(1);
   lcd.cLCD_Init();
   lcd.cLCD_Contrast(58);
   lcd.cLCD_CLS();//inicjalizujemy i czyścimy LCD
+
+  joystick.setBoundaries();
   
-  menu_show();//wyświetlamy menu
+  //menu_show();//wyświetlamy menu
   
-  Timer1.initialize();//inicjalizujemy timer i przypisujemy podprogram przerwania obsługujący joystick
-  Timer1.setPeriod(4000);
-  Timer1.attachInterrupt(joystick_update);
 }
 
 void loop(void)
