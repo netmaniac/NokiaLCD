@@ -1,8 +1,15 @@
 /* test program to demonstration LCD & Joystick, using a menu */
-//#include "PCF8833.h"
+/*
+ * Code was donated by https://github.com/dannyow
+ * 
+ * It requires Nettigo Keypad to be instaled in
+ * sketchbook/libraries 
+ * https://github.com/netmaniac/NettigoKeypad
+ * */
+
 #include "New3D.h"
 #include "image.h"
-//#include <avr/pgmspace.h>
+
 #include <NettigoKeypad.h>
 #include "NokiaJoystick.h"
 Nokia_Joystick joystick = Nokia_Joystick();
@@ -242,65 +249,15 @@ void draw_3D(Vertex * V,  Edge * E, unsigned char nVertices, unsigned char nEdge
     px = tempX * cosY - tempZ * sinY;
     pz = tempX * sinY + tempZ * cosY;
     
-    // save the screen coordinates
-    //    Serial.println((unsigned char)px,10);
-    //    Serial.println((unsigned char)py,10);
     
     new_points[i].x = (unsigned char)px * SCALE_FACTOR + OFFSETX;
     new_points[i].y = (unsigned char)py * SCALE_FACTOR + OFFSETY;
-    //    Serial.println(new_points[i].x,10);
-    //    Serial.println(new_points[i].y,10);
   }
-  // lcd plot
-  
-  //  Serial.println("Points:");
-  //  for (i=0; i<20; i++) {
-  //    Serial.print("NEW: x,y: ");
-  //    Serial.print(new_points[i].x, DEC);
-  //    Serial.print(":");
-  //    Serial.println(new_points[i].y, DEC);
-  //
-  //    Serial.print("OLD: x,y: ");
-  //    Serial.print(old_points[i].x, DEC);
-  //    Serial.print(":");
-  //    Serial.println(old_points[i].y, DEC);
-  //  }
-  
-  //  Serial.println("Edges: ");
-  //  Serial.print(nEdges, DEC);
   for (i=0; i<nEdges; i++)
   {
-    //    Serial.println("Edge number:");
-    //    Serial.println(E[i].start, DEC);
-    //    Serial.println(E[i].end, DEC);
-    
-    // erase old edges
-    //    drawLine(
-    //             old_points[E[i].start].x, old_points[E[i].start].y,
-    //             old_points[E[i].end].x, old_points[E[i].end].y);
-    // draw new edges
     drawLine(
              new_points[E[i].start].x, new_points[E[i].start].y,
              new_points[E[i].end].x, new_points[E[i].end].y);
-		// erase old edges
-    //		LCD_Line(
-    //			old_points[E[i].start].x, old_points[E[i].start].y,
-    //			old_points[E[i].end].x, old_points[E[i].end].y,
-    //			BG_COLOR);
-    //		// draw new edges
-    //		LCD_Line(
-    //			new_points[E[i].start].x, new_points[E[i].start].y,
-    //			new_points[E[i].end].x, new_points[E[i].end].y,
-    //			LINE_COLOR);
-    ////		Serial.println("Edge: ");
-    ////    Serial.println(i, DEC);
-    ////    
-    ////    Serial.println(new_points[E[i].start].x,10);
-    ////    Serial.println(new_points[E[i].start].y,10);
-    ////
-    ////    Serial.println(new_points[E[i].end].x,10);
-    ////    Serial.println(new_points[E[i].end].y,10);
-    
   }
 }
 
@@ -322,6 +279,7 @@ unsigned long int shapeToDraw = 0;
 void setup(void){
   Serial.begin(9600);
   Serial.println("SETUP-------------------");
+  joystick.setDebounce(false);
   LCD_BACKLIGHT(0);
   digitalWrite(BL_PIN, HIGH); 
   InitPort();
@@ -349,41 +307,6 @@ void setup(void){
   Serial.println("SETUP DONE-------------------");
 }
 
-#define NUM_KEYS 5
-
-// joystick number
-#define UP_KEY 1
-#define LEFT_KEY 2
-#define CENTER_KEY 4
-#define DOWN_KEY 3
-#define RIGHT_KEY 0
-
-
-// debounce counters
-byte button_count[NUM_KEYS];
-// button status - pressed/released
-byte button_status[NUM_KEYS];
-// button on flags for user program 
-byte button_flag[NUM_KEYS];
-
-// Convert ADC value to key number
-char get_key(unsigned int input);
-void update_adc_key();
-  
-
-char pressed_key(){
-  byte i;
-  
-  for(i=0; i<NUM_KEYS; i++){
-    if(button_flag[i] !=0){
-      button_flag[i]=0;  // reset button flag
-      return i;
-    }
-  }
-  
-  return -1;
-  
-}
 
 
 unsigned char xRot = 0;
@@ -399,7 +322,7 @@ void loop(void){
   
   unsigned char rot = counter%256;
   
-  char step = 8;
+  char step = 6;
   
   char key = joystick.key_pressed(analogRead(0));
   
@@ -450,104 +373,15 @@ void loop(void){
      	draw_prism(xRot,yRot,zRot); 
       break;
   }
-  /*  
-   drawLine(counter%80,0, counter%80,79);
-   drawLine(79-counter%80,0, 79-counter%80,79);
-   
-   float s=1.23f;
-   double _sin = sin(3.1415/2.3);
-   double _cos = cos(3.1415/2.23122);
-   double r = _cos/_sin;
-   
-   drawLine(0, counter%80,	79,counter%80);
-   drawLine(0,79-counter%80, 79, 79-counter%80);
-   */
-  //  frameBuffer[0]=0x07;
-  //  frameBuffer[FRAME_WIDTH_IN_BYTES]=0x01;
-  //  frameBuffer[FRAME_WIDTH_IN_BYTES*2]=0x01;
-  
-  //FBoff ->
   drawBuffer(LINE_COLOR, BG_COLOR);
-  //counter+=4;
   stopTime = millis();
   // printount FPS :)
   Serial.println(1000/float(stopTime-startTime),DEC);
   
-  //handleInput();
 }
 
 ////////////////////////////////////////////////
-//keypad debounce parameter
-#define DEBOUNCE_MAX 5	//15
-#define DEBOUNCE_ON  1	//10
-#define DEBOUNCE_OFF 1	//3 
-
-int  adc_key_val[NUM_KEYS] ={10, 155, 341, 517, 751};
-
-char get_key(unsigned int input){
-	char k;
-  
-	for (k = 0; k < NUM_KEYS; k++){
-		if (input < adc_key_val[k]){
-      return k;
-    }
-	}
-  
-  if (k >= NUM_KEYS){
-    k = -1;     // No valid key pressed
-  }
-  
-  return k;
-}
-
-void update_adc_key(){
-  int adc_key_in;
-  char key_in;
-  byte i;
-  
-  
-  
-  adc_key_in = analogRead(0);
-  key_in = get_key(adc_key_in);
-  for(i=0; i<NUM_KEYS; i++)  {
-    if(key_in==i){
-      //one key is pressed 
-      
-      //debouncement only for center button
-      if (key_in==CENTER_KEY) {
-        if(button_count[i]<DEBOUNCE_MAX) {
-          button_count[i]++;
-          if(button_count[i]>DEBOUNCE_ON){
-            if(button_status[i] == 0){
-              button_flag[i] = 1;
-              button_status[i] = 1; //button debounced to 'pressed' status
-              //Serial.println(i,HEX);
-            }
-          }
-        }
-      }else {
-        button_flag[i] = 1;
-        button_status[i] = 1; //button debounced to 'pressed' status
-      }
-      
-      
-      
-    }else {
-	    // no button pressed
-      if (button_count[i] >0) {  
-        button_flag[i] = 0;	
-        button_count[i]--;
-        if(button_count[i]<DEBOUNCE_OFF){
-          button_status[i]=0;   //button debounced to 'released' status
-          //Serial.println(0xF000+i,HEX);          
-        }
-      }
-    }
-  }
-}
-
 
 ISR(TIMER2_OVF_vect) {  
   TCNT2  = 6;
-  update_adc_key();
 }

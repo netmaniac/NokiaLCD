@@ -1,9 +1,8 @@
 # Biblioteka obsługi Arduino LCD Shield ARD Graph 123
 
-Biblioteka dotyzy produktu: https://nettigo.pl/products/54
-Wywodzi się z projektu: https://github.com/netmaniac/NokiaLCD
+Biblioteka dotyczy produktu: https://nettigo.pl/products/54
+Wywodzi się z projektu kodu dawanego przez producenta - http://and-tech.eu/ ale została zupełnie przepisana
 
-Postanowiłem ja ulepszyć, ponieważ nie lubię kiedy API robią specjaliści od radzieckiej satelity.
 
 ### Interfejs:
 Interfejs oparłem luźno na stosie PDF wzorowanym na interfejsie Canvas z HTML5. Jestem do takiego interfejsu przyzwyczajony i uważam, że jest wygodny.
@@ -35,4 +34,3 @@ Przykład użycia biblioteki w przykładzie o nazwie "nokia_test".
 
 Uwagi i propozycje rozszerzeń mile widziane :-)
 
-sprae
