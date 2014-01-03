@@ -14,6 +14,22 @@
 #define LIGHTBLUE 0xADE
 #define PINK   0xF6A
 
+// lcd 8-bit colors
+#define LCD_BLUE        0x03
+#define LCD_YELLOW      0xFC
+#define LCD_RED         0XE0
+#define LCD_GREEN       0X1C
+#define LCD_BLACK       0X00
+#define LCD_WHITE       0XFF
+#define LCD_BRIGHTGREEN 0X3D
+#define LCD_DARKGREEN   0X14
+#define LCD_DARKRED     0XA0
+#define LCD_DARKBLUE    0X02
+#define LCD_BRIGHTBLUE  0X1F
+#define LCD_ORANGE      0XF8
+#define LCD_GRAY                0b11011010  
+#define LCD_PINK                0b11100010
+
 /* 8x8 font */
 #define FONT_HEIGHT 8
 
