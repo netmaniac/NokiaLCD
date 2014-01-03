@@ -2,100 +2,84 @@
 // Bascom image format display add-on by Piotr Rzeszut
 
 extern "C" {
-	#include "PCF8833.h"
-	/*#include <avr/pgmspace.h>
-	#include <avr/io.h>*/
-	#ifndef Arduino_h
-	//#include "Arduino.h"
-	#endif
+  #include "PCF8833.h"
 }
+
 #include "Nokia_lcd.h"
 
-//constructor
-Nokia_lcd::Nokia_lcd(){
+size_t Nokia_lcd::write(uint8_t c)
+{
+  byte fontWidth = pgm_read_byte(_font);
+  if (c == '\n')
+  {
+    byte fontHeight = pgm_read_byte(_font+1);
+    _y += fontHeight;
+    _x = 0;
+    return 0;
+  }
+
+  else if (c == '\r')
+  {
+    return 0;
+  }
+
+  if (_x > (131 - fontWidth))
+    return 0;
+
+  LCD_Char(c, _x, _y, _color, _background, _font);
+  _x += fontWidth;
+  return 1;
 }
 
-void Nokia_lcd::cLCD_Init(void){
-	LCD_Init();
+void Nokia_lcd::begin(void){
+  LCD_Init();
 }
 
-void Nokia_lcd::cLCD_Backlight(unsigned char on){
-	digitalWrite(BL_ON,on);
+void Nokia_lcd::backlight(unsigned char on){
+  digitalWrite(BL_ON,on);
 }
 
-void Nokia_lcd::cLCD_CLS(int color){
-	LCD_Box(0, 0, 131, 131, FILL, color);
+void Nokia_lcd::clear(int color){
+  LCD_Box(0, 0, 131, 131, FILL, color);
 }
 
-void Nokia_lcd::cLCD_GotoXY(unsigned char x, unsigned char y){
-	LCD_GotoXY(x, y);
+void Nokia_lcd::moveTo(byte x, byte y){
+  _x = x;
+  _y = y;
 }
 
-
-void Nokia_lcd::cLCD_Pixel(unsigned char x, unsigned char y, int color){
-	LCD_Pixel(x,y,color);
-
-}
-void Nokia_lcd::cLCD_Line(unsigned char x0, unsigned char y0, unsigned char x1, unsigned char y1, int color) { 
-	LCD_Line(x0,y0, x1,y1, color); 
-
+void Nokia_lcd::setColor(word color){
+  _color = color;
 }
 
-void Nokia_lcd::cLCD_Box(unsigned char x0, unsigned char y0, unsigned char x1, unsigned char y1, unsigned char fill, int color) { 
-	LCD_Box(x0, y0, x1, y1, fill, color);
+void Nokia_lcd::setBackground(word color){
+  _background = color;
 }
 
+void Nokia_lcd::setFont(byte *font){
+  _font = font;
+}
 
+void Nokia_lcd::pixel(){
+  LCD_Pixel(_x, _y, _color);
 
-void Nokia_lcd::cLCD_Circle(unsigned char x0, unsigned char y0, unsigned char radius, int color) { 
-	LCD_Circle(x0,y0, radius,color);
+}
+void Nokia_lcd::lineTo(unsigned char x, unsigned char y) { 
+  LCD_Line(_x,_y, x, y, _color);
+  _x = x;
+  _y = y;
+}
+
+void Nokia_lcd::fillRect(unsigned char x, unsigned char y, unsigned char w, unsigned char h) { 
+  LCD_Box(x, y, x+w, y+h, FILL, _color);
+}
+
+void Nokia_lcd::circle(unsigned char x, unsigned char y, unsigned char radius) { 
+  LCD_Circle(x, y, radius, _color);
 } 
 
-void Nokia_lcd::cLCD_Char(char c, unsigned char x, unsigned char y, int fColor, int bColor, unsigned char *font) { 
- 	LCD_Char(c, y,x, fColor, bColor, font);
+void Nokia_lcd::bitmap(unsigned char start_x, unsigned char start_y,const unsigned char *bitmap_data) {
+  LCD_Bitmap (start_x, start_y, pgm_read_byte(bitmap_data+1), pgm_read_byte(bitmap_data+2), bitmap_data+5);
 } 
 
-void Nokia_lcd::cLCD_String(char *pString, unsigned char  x, unsigned char  y,  int fColor, int bColor, unsigned char *font) { 
-	LCD_String(pString, y,x, fColor, bColor, font);
-}
-
-void Nokia_lcd::cLCD_Int(int n, unsigned char  x, unsigned char  y,  int fColor, int bColor, unsigned char *font) { 
-	char buf[10];
-	LCD_String(itoa(n,buf,10), y,x, fColor, bColor, font);
-}
-
-void Nokia_lcd::cLCD_Float(float f, int p, unsigned char  x, unsigned char  y,  int fColor, int bColor, unsigned char *font) { 
-	char buf[10];
-	char *ct=buf;
-	int n=(int)f;
-	unsigned char nCols;
-    nCols = pgm_read_byte(font);
-	LCD_String(itoa(n,buf,10), y,x, fColor, bColor, font);
-	for(ct=buf;(*ct)>0;ct++)x+=nCols;
-	//LCD_Char('.', y,x, fColor, bColor, font);
-	int m=1;
-	for(n=0;n<p;n++)m*=10;
-	if(m!=1){
-		LCD_Char('.', y,x, fColor, bColor, font);
-		x+=nCols;
-		f*=(float)m;
-		n=(int)f%m;
-		for(m/=10;m>1;m/=10)if(n<m){
-			LCD_Char('0', y,x, fColor, bColor, font);
-			x+=nCols;
-		}
-		LCD_String(itoa(n,buf,10), y,x, fColor, bColor, font);
-	}
-}
-
-void Nokia_lcd::cLCD_Bitmap(unsigned char start_x, unsigned char start_y,const unsigned char *bitmap_data) {
-	LCD_Bitmap (start_x, start_y, pgm_read_byte(bitmap_data+1), pgm_read_byte(bitmap_data+2), bitmap_data+5);
-} 
-
-void Nokia_lcd::cLCD_Contrast(unsigned char contrast) {
-	
-} 
-/*void Nokia_lcd::cLCD_Bitmap_bas(unsigned char start_x, unsigned char start_y, unsigned char *bitmap_data) {
-	LCD_Bitmap_bas(start_x, start_y, pgm_read_byte(bitmap_data+1), pgm_read_byte(bitmap_data+2), bitmap_data+5);
-} */
- 
+Nokia_lcd Display;
