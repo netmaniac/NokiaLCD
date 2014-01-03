@@ -4,7 +4,8 @@
  * 
  * It requires Nettigo Keypad to be instaled in
  * sketchbook/libraries 
- * https://github.com/netmaniac/NettigoKeypad
+ * https://github.com/netmaniac/NettigoKeypad 
+ * Code does use API from PCF8833.h not Display class from Nokia_lcd.h
  * */
 
 #include "New3D.h"
