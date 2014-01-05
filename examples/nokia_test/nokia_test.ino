@@ -12,13 +12,14 @@ void setup() {
 
 void loop() {
   // put your main code here, to run repeatedly:
-  for (byte i=0; i<64; i++)
+  Display.println(F("PROGRESS:"));
+  for (byte i=0; i<100; i++)
   {
     Display.setColor(RED);
-    Display.fillRect(0, 0, map(i, 0, 63, 0, 131), 10);
+    Display.fillRect(17, 9, map(i, 0, 99, 17, 131), 16);
     Display.setColor(BLUE);
-    Display.moveTo(1, 1);
-    Display.print(i, BIN);
+    Display.moveTo(1, 9);
+    Display.print(i);
     delay(500);
   }
   Display.clear();
