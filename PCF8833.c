@@ -666,7 +666,7 @@ void LCD_Char(char c, unsigned char x, unsigned char y, int fColor, int bColor, 
 		  Word0 = bColor; 
 		else 
 		  Word0 = fColor; 
-		LCD_Pixel(y+j, x+i, Word0);
+		LCD_Pixel(x+j, y+i, Word0);
 		Mask = Mask >> 1; 
 	  }   
 	} 
