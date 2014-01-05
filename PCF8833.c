@@ -607,208 +607,74 @@ void LCD_Bitmap_bas (unsigned char start_x, unsigned char start_y, unsigned char
 }*/
 
 void LCD_Char(char c, unsigned char x, unsigned char y, int fColor, int bColor, unsigned char *font) { 
- 
- int    i,j,k; 
- 
- unsigned char   nCols; 
- 
- unsigned char  nRows; 
- 
- unsigned char  nBytes; 
- unsigned int   PixelRow; 
- 
- unsigned int   Mask; 
- 
- unsigned int   Word0; 
- 
- 
- unsigned char *pFont,   *pChar; 
-	/*#ifdef FONT12x16f_included
-		if(font==3)pFont = (unsigned char *)FONT12x16f; 
-	#endif
-	#ifdef FONT12x16_included
-		if(font==2)pFont = (unsigned char *)FONT12x16; 
-	#endif
-	#ifdef FONT8x8_included
-		if(font==1)pFont = (unsigned char *)FONT8x8; 
-	#endif*/
-	pFont=font;
-  
- 
+
+  int    i,j,k; 
+
+  unsigned char   nCols; 
+
+  unsigned char  nRows; 
+
+  unsigned char  nBytes; 
+  unsigned int   PixelRow; 
+
+  unsigned int   Mask; 
+
+  unsigned int   Word0; 
+
+
+  unsigned char *pFont,   *pChar; 
+
+  pFont=font;
+
+
   // get the nColumns, nRows and nBytes 
   nCols = pgm_read_byte(pFont); 
- 
+
   nRows = pgm_read_byte(pFont + 1); 
- 
+
   nBytes = pgm_read_byte(pFont + 2); 
-   
+
   // get pointer to the last byte of the desired character 
 #ifdef OPT_FONT 
-  pChar = pFont + (nBytes * (c - 0x1F));
+	pChar = pFont + (nBytes * (c - 0x1F));
 #else  
-  pChar = pFont + (nBytes * c);  
+	pChar = pFont + (nBytes * c);  
 #endif 
-    
-  // Row address set  (command 0x2B) 
- 
-/*SendLcd(LCDCommand,PASET); 
- 
- SendLcd(LCDData,x); 
- 
-  SendLcd(LCDData,x + nRows - 1); 
-   
-   Serial.print(x + nRows - 1);
- 
-  // Column address set  (command 0x2A) 
- 
-SendLcd(LCDCommand,CASET); 
- 
- SendLcd(LCDData,y); 
-  SendLcd(LCDData,y + nCols - 1); 
- 
-  Serial.print(y + nCols -1);
- 
- // WRITE MEMORY 
- 
- SendLcd(LCDCommand,RAMWR); 
-  */
- 
-  // loop on each row, working backwards from the bottom to the top 
- 
-  for (i = 0; i<nRows; i++) { 
- 
-   
-    // copy pixel row from font table and then decrement row 
- PixelRow=0;
- if(nCols > 8)
-	PixelRow=pgm_read_byte(pChar++) * 256;
-  PixelRow += pgm_read_byte(pChar++); 
-  
-  
- 
-  //Mask = 0x80; 
-  Mask=1;
-	for (k=0;k<nCols-1;k++)
-	Mask*=2; 
- 
-    for (j = 0; j < nCols; j += 1) { 
-   
- 
-      // if pixel bit set, use foreground color; else use the background color 
- 
-      // now get the pixel color for two successive pixels 
- 
-      if ((PixelRow & Mask) == 0) 
-    Word0 = bColor; 
- 
-   else 
- 
-    Word0 = fColor; 
-    
-    LCD_Pixel( y+j,x+i, Word0);
 
-   Mask = Mask >> 1; 
- /*     if ((PixelRow & Mask) == 0) 
- 
-    Word1 = bColor; 
- 
-   else 
-    Word1 = fColor; 
- 
-   Mask = Mask >> 1; 
- 
-    
- 
-      // use this information to output three data bytes 
-      SendLcd(LCDCommand,(Word0 >> 4) & 0xFF); 
- 
-      SendLcd(LCDCommand,((Word0 & 0xF) << 4) | ((Word1 >> 8) & 0xF)); 
- 
-   SendLcd(LCDCommand,Word1 & 0xFF); 
-*/ 
-  }   
- } 
- 
+
+	// loop on each row, working backwards from the bottom to the top 
+
+	for (i = 0; i<nRows; i++) { 
+	  // copy pixel row from font table and then decrement row 
+	  PixelRow=0;
+	  if(nCols > 8)
+		PixelRow=pgm_read_byte(pChar++) * 256;
+	  PixelRow += pgm_read_byte(pChar++); 
+
+
+
+	  //Mask = 0x80; 
+	  Mask=1;
+	  for (k=0;k<nCols-1;k++)
+		Mask*=2; 
+
+	  for (j = 0; j < nCols; j += 1) { 
+		// if pixel bit set, use foreground color; else use the background color 
+		// now get the pixel color for two successive pixels 
+
+		if ((PixelRow & Mask) == 0) 
+		  Word0 = bColor; 
+		else 
+		  Word0 = fColor; 
+		LCD_Pixel(y+j, x+i, Word0);
+		Mask = Mask >> 1; 
+	  }   
+	} 
+
   // terminate the Write Memory command 
- SendLcd(LCDCommand,NOP);   
+  SendLcd(LCDCommand,NOP);   
 } 
 
-/*
-void LCD_Char(char c, unsigned char x, unsigned char y, int fColor, int bColor) { 
- 
- int    i,j; 
- 
- unsigned char   nCols; 
- 
- unsigned char  nRows; 
- 
- unsigned char  nBytes; 
- unsigned char   PixelRow; 
- 
- unsigned char   Mask; 
- 
- unsigned int   Word0; 
- 
- 
- unsigned char *pFont,   *pChar; 
-  
-  pFont = (unsigned char *)FONT8x8;   
- 
-  
- 
-  // get the nColumns, nRows and nBytes 
-  nCols = pgm_read_byte(pFont); 
- 
-  nRows = pgm_read_byte(pFont + 1); 
- 
-  nBytes = pgm_read_byte(pFont + 2); 
-   
-  // get pointer to the last byte of the desired character 
- 
-  pChar = pFont + (nBytes * (c - 0x1F)); 
- 
-    
-  // Row address set  (command 0x2B) 
- 
- 
-  // loop on each row, working backwards from the bottom to the top 
- 
-  for (i = 0; i<nRows; i++) { 
- 
-   
-    // copy pixel row from font table and then decrement row 
- 
-  PixelRow = pgm_read_byte(pChar++); 
-  
- 
-  Mask = 0x80; 
- 
-    for (j = 0; j < nCols; j += 1) { 
-   
- 
-      // if pixel bit set, use foreground color; else use the background color 
- 
-      // now get the pixel color for two successive pixels 
- 
-      if ((PixelRow & Mask) == 0) 
-    Word0 = bColor; 
- 
-   else 
- 
-    Word0 = fColor; 
-    
-    LCD_Pixel( y+j,x+i, Word0);
-
-   Mask = Mask >> 1; 
-
-  }   
- } 
- 
-  // terminate the Write Memory command 
- SendLcd(LCDCommand,NOP);   
-} 
-*/
- 
 void LCD_String(char *pString, unsigned char x, unsigned char  y,  int fColor, int bColor, unsigned char *font) { 
 	unsigned char nCols;
     nCols = pgm_read_byte(font); 
@@ -823,15 +689,6 @@ void LCD_String(char *pString, unsigned char x, unsigned char  y,  int fColor, i
  
     // advance the y position 
 	y+=nCols;
-	/*#ifdef FONT12x16f_included
-		if(font==3)y=y+12;
-	#endif
-	#ifdef FONT12x16_included
-		if(font==2)y=y+12; 
-	#endif
-	#ifdef FONT8x8_included
-		if(font==1)y=y+8;
-	#endif*/
     if (x > 131) break; 
  
  } 
