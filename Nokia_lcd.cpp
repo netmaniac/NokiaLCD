@@ -27,7 +27,7 @@ size_t Nokia_lcd::write(uint8_t c)
     return 0;
 
   LCD_Char(c, _x, _y, _color, _background, _font);
-  _x += fontWidth;
+  _y += fontWidth;
   return 1;
 }
 
