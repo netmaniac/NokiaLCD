@@ -1,8 +1,8 @@
 #include <Nokia_lcd.h>
 #include <FONT8x8.h>
+#include <FONT12x16.h>
 
 void setup() {
-  // put your setup code here, to run once:
   Display.begin();
   Display.clear();
   Display.backlight(1);
@@ -11,16 +11,17 @@ void setup() {
 }
 
 void loop() {
-  // put your main code here, to run repeatedly:
+  Display.moveTo(1, 2);
   Display.println(F("PROGRESS:"));
   for (byte i=0; i<100; i++)
   {
     Display.setColor(RED);
-    Display.fillRect(17, 9, map(i, 0, 99, 17, 131), 16);
+    Display.fillRect(17, 10, map(i, 0, 99, 0, 114), 7);
     Display.setColor(BLUE);
-    Display.moveTo(1, 9);
+    Display.moveTo(1, 10);
     Display.print(i);
-    delay(500);
+    delay(200);
   }
   Display.clear();
+
 }
